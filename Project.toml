@@ -8,3 +8,6 @@ Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
+
+[compat]
+julia = "1.1"

@@ -26,6 +26,5 @@ julia> include("deps/build.jl")
 Open the Julia Notebooks    
 ```
 julia> using IJulia
-julia> notebook(dir="./notebooks/")
+julia> notebook(dir=".")    
 ```
-
