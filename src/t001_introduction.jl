@@ -16,6 +16,8 @@
 # We will need to load in Flux
 #
 using Flux
+include("../src/check_cuda.jl")
+print_system_gpu_status()
 
 # # A first Koan
 # Create a function, `f`, such that our assert function passes
