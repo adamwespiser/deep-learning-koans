@@ -6,6 +6,8 @@
 #  - <item 3>
 #
 # Problem Statement: < fill this in >
+# Look! Images that are in the assets directory can be used here!!!
+# ![](../src/assets/t001_introduction/fig0.png)
 #
 # # Setup
 # <load all the libraries here>
