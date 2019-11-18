@@ -157,6 +157,12 @@ git-tree-sha1 = "674b67f344687a88310213ddfa8a2b3c76cc4252"
 uuid = "9a962f9c-6df0-11e9-0e5d-c546b8b5ee8a"
 version = "1.1.0"
 
+[[DataDeps]]
+deps = ["HTTP", "Reexport", "SHA"]
+git-tree-sha1 = "3b07400b34d0a993d13370a179877cfd218d1d17"
+uuid = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
+version = "0.7.0"
+
 [[DataStructures]]
 deps = ["InteractiveUtils", "OrderedCollections"]
 git-tree-sha1 = "f94423c68f2e47db0d6f626a26d4872266e0ec3d"
@@ -243,11 +249,23 @@ git-tree-sha1 = "77e27264276fe97a7e7fb928bf8999a145abc018"
 uuid = "0c68f7d7-f131-5f86-a1c3-88cf8149b2d7"
 version = "1.0.3"
 
+[[GZip]]
+deps = ["Libdl", "Test"]
+git-tree-sha1 = "ee443ef166b29282301468d8af403e1ed8f5412e"
+uuid = "92fee26a-97fe-5a0c-ad85-20a5f3185b63"
+version = "0.5.0"
+
 [[Graphics]]
 deps = ["Colors", "Compat", "NaNMath"]
 git-tree-sha1 = "e3ead4211073d4117a0d2ef7d1efc5c8092c8412"
 uuid = "a2bd30eb-e257-5431-a919-1863eab51364"
 version = "0.4.0"
+
+[[HTTP]]
+deps = ["Base64", "Dates", "IniFile", "MbedTLS", "Sockets"]
+git-tree-sha1 = "5c49dab19938b119fe204fd7d7e8e174f4e9c68b"
+uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+version = "0.8.8"
 
 [[IJulia]]
 deps = ["Base64", "Conda", "Dates", "InteractiveUtils", "JSON", "Markdown", "MbedTLS", "Pkg", "Printf", "REPL", "Random", "SoftGlobalScope", "Test", "UUIDs", "ZMQ"]
@@ -321,6 +339,12 @@ git-tree-sha1 = "b6e249be10a3381b2c72ac82f2d13d70067cb2bd"
 uuid = "9b13fd28-a010-5f03-acff-a1bbcff69959"
 version = "0.5.0"
 
+[[IniFile]]
+deps = ["Test"]
+git-tree-sha1 = "098e4d2c533924c921f9f9847274f2ad89e018b8"
+uuid = "83e8ac13-25f8-5344-8a64-a9f2b223428f"
+version = "0.5.0"
+
 [[InteractiveUtils]]
 deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
@@ -378,6 +402,12 @@ version = "2.0.4"
 
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
+
+[[MLDatasets]]
+deps = ["BinDeps", "ColorTypes", "DataDeps", "FixedPointNumbers", "GZip", "Requires"]
+git-tree-sha1 = "7396e9c315ede9406c0869bbab54384e95af0088"
+uuid = "eb30cadb-4394-5ae3-aed4-317e484a6458"
+version = "0.4.0"
 
 [[MacroTools]]
 deps = ["CSTParser", "Compat", "DataStructures", "Test", "Tokenize"]
