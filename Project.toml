@@ -9,6 +9,7 @@ IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 MLDatasets = "eb30cadb-4394-5ae3-aed4-317e484a6458"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 
 [compat]

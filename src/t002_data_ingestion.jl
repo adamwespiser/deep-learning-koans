@@ -93,4 +93,14 @@ random_num = rand(MersenneTwister(myseed),1:10^20) #src
 # # Read a file in line by line
 # in julia we can read a file in, line by line
 
-in_file = "../src/assets/t001_introduction/basic.txt"
+in_file = "../src/assets/t002_data_ingestion/basic.txt"
+file_contents = in_file
+about_koan = "read in_file into file_contents"
+file_contents = read(in_file, String) #src
+@assert file_contents == "apple\nbanana\norange\npear\ngrapes\n"
+
+
+# # Using BSON
+# imports
+using BSON
+dir = "../src/assets/t002_data_ingestion/"
