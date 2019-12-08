@@ -6,12 +6,97 @@
 #  - Inspection of each Flux.Train arguments
 #  - A deep dive into Flux.train is “learning” models by calling an optimizer
 #
+# The source code for Flux's optimization code is [available here](https://github.com/FluxML/Flux.jl/tree/master/src/optimise)
+#
 # # Setup
-# <load all the libraries here>
-
+# Load Flux
 using Flux
+using Random
+# ## Set up some basic variables
+# Note: You may need to re-initialize these variables for
+# Flux.train to show a difference in parameters needed
+# to pass some of the tests
+Random.seed(42)
+function create_model()
+  Chain(
+    Dense(784, 32, σ),
+    Dense(32, 10), softmax)
+end
 
-# # First Example
-# for the next examples
-x = 1
-print(x)
+m = create_model()
+loss(x, y) = Flux.mse(m(x), y)
+ps = Flux.params(m)
+
+opt = ADAM(0.1)
+x = rand(784)
+y = rand(10)
+data = Iterators.repeated((x, y), 50)
+
+
+# #### Randomize model
+# This is a helper function that re-initializes the model,
+# allowing us to learn it many times with different staring states.
+# Alternatively, we have `reinitializie_model`, which will reset
+# the m to the original params.
+# Prove that two `create_model` calls do not create the same
+# set of parameter
+
+m1 = randn(1) # Fix me !
+m1 = params(create_model()) #src
+m2 = copy(m2) # Fix me !
+m2 = params(create_model()) #src
+@assert m1 != m2
+
+
+# ## More on Flux Train
+# [Flux.Train] is the core of Flux's Machine Learning model
+# and is responsible for updating the model parameters, via
+# an loss function, to the data seen by the model
+# The basic train function is as follows:
+m = create_model()
+ps_old = params(m)
+Flux.train!(loss, ps, data, opt)
+@assert ps_old != ps && ps_old == ps_old
+
+# Thus, we can see that the parameters of the model are updated!
+
+# ## Flux train callback functions
+# Create a lambda function that accepts no input, and simply returns 0.
+lambda_function = identity # Fix me!
+lambda_function = () -> 0.0 #src
+@assert [lambda_function() for i in 1:10] ==  zeros(10)
+
+# ## Flux.train callbacks
+# In flux, we can make a call back that runs an effect, in our case,
+# we will want to print out a message to IO. Write a function that
+cb = identity # Fix me
+cb = () -> println("Hello World!")
+@assert typeof(cb()) == Nothing
+
+# ## Flux.train callbacks
+# Now, we can write a useful callback function that will test our loss
+# for every iteration of execution
+test_x, test_y = x, y
+evalcb = () -> println("some function to report loss")
+evalcb = () -> @show(loss(test_x, test_y)) #src
+Flux.train!(loss, ps, data, opt, cb = evalcb)
+
+
+# ## Callback thresholding/throttling
+# Flux gives us the ability to throttle the number of times we
+# invoke our callback function. This function is called
+# `throttle` and it accepts a callback, and an Integer n, which
+# prevent the callback from being called more than n times per second
+# [Throttle Source Code Here](https://github.com/FluxML/Flux.jl/blob/master/src/utils.jl#L115)
+m = create_model()
+test_x, test_y = x, y
+evalcbt = () -> @show(loss(test_x, test_y)) # Wrap this in a call to throttle
+evalcbt = throttle(evalcb, 10) #src
+Flux.train!(loss, ps, data, opt, cb = evalcbt)
+
+
+
+
+
+
+

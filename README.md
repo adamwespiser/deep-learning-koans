@@ -10,8 +10,17 @@ A list of koans projects for a variety of platforms and languages [can be found 
 ### So what's this project trying to do?
 This project attempts to take the Koans approach to teaching programming, and apply that to the subject matter of deep learning in Julia.  
 To do this, we will focus first on giving a skippable overview of Julia, then move on to demonstrating the library [Flux.jl](https://github.com/FluxML/Flux.jl).  
-Technically, this project is implemented as a series of IJulia Notebooks that you generate from source code, host locally with IJulia, then interactively modify the code until "it works". 
+Technically, this project is implemented as a series of IJulia Notebooks that you generate from source code, host locally with IJulia, the extension to run Julia in a Jupyter Notebook, then interactively modify the code until "it works". 
 Links and additional resources are scattered throughout the material.    
+
+### Why Julia?
+First, Julia offer a couple advantages compared to Python and R that make it superior for some projects, namely, its gradual typing improves the developer experience and code reliability, and compilation to LLVM makes Julia code faster than R/Matlab/Python. 
+However, Julia is young, and does not have the depth and breadth of machine learning, and web development packages that make Python a safe production choice, or the depth of statistical packages and academic work that makes R so revered.     
+Nonetheless, Julia's LLVM compilcation offers huge advantage for Deep Learning in research and practice: we can actually program using a single language, instead of having to call an underlying C++ library, like Tensorflow or PyTorch. This requires a programming language, differential programming, which is currently being studied and integrated into Julia through the Zygote project
+
+### Why Flux?
+Flux is a Julia only, neural network library, with basic differential programing capability, with a library of optimizers, layers, and helper functions that can facilitate deep learning, and has first-class support for GPU allocation.
+Thus, solutions like Julia/Flux, that use a single language to compile to fast LLVM bytecode and leverage GPUs, are a good future for for Deep Learning, as they are conceptually simpler to understand than current solutions like PyTorch/TensorFlow with the same performance. However, and you'll see this very soon throgh the koans, the API maturity is not quite there! 
 
 
 # Chapters/Contents

@@ -118,11 +118,10 @@ opt = ADAM(0.01)
 tx, ty = (Xs[5], Ys[5])
 evalcb = () -> @show loss(tx, ty)
 
+params_m = params(m)
+
 Flux.train!(loss = NaN, params = NaN, data = NaN, opts = NaN, cb = throttle(evalcb, 30)) # Fill in the first 4 args
-
-
 Flux.train!(loss, params(m), zip(Xs, Ys), opt, cb = throttle(evalcb, 30)) #src
 
-
-
+@assert params_m != params(m)
 
