@@ -1,4 +1,4 @@
-# # Tutorial X: Header
+# # Tutorial 5: Recurrent Neural Networks
 #
 # In this tutorial we will cover the following
 #  - *What are Recurrent Neural Networks?* What is the fundamental problem they solve? LSTM, RNN building blocks, (aside on LTSM white papers, advanced methods like attention, word vecs, doc vecs, et cetera). Communication of RNN vs CNN differences
@@ -11,10 +11,14 @@
 # [Flux Documentation](https://fluxml.ai/Flux.jl/v0.4/models/layers.html#Recurrent-Layers-1)
 # # Setup
 # Import the libraries here, from `Flux`, `StatsBase`, and `Base.Iterators`
-using Flux
+module T005 #src
+ing Flux
 using Flux: onehot, chunk, batchseq, throttle, crossentropy
 using StatsBase: wsample
 using Base.Iterators: partition
+using Test
+
+cd("test"); #src
 text_file_local = "../src/assets/t005_recurrent_layers/shakespeare.txt"
 text_file_remote_url = "https://cs.stanford.edu/people/karpathy/char-rnn/shakespeare_input.txt"
 
@@ -24,8 +28,8 @@ isfile(text_file_local) ||
   download(text_file_remote_url,
           text_file_local)
 
-
 # # Set up Shakespeare dataset
+@show pwd()
 text = collect(String(read(text_file_local)))
 alphabet = [unique(text)..., '_']
 text = map(ch -> onehot(ch, alphabet), text)
@@ -35,8 +39,9 @@ N = length(alphabet)
 seqlen = 50
 nbatch = 50
 
-Xs = collect(partition(batchseq(chunk(text,        nbatch), stop), seqlen))
-Ys = collect(partition(batchseq(chunk(text[2:end], nbatch), stop), seqlen))
+Xs = collect(partition(batchseq(chunk(text,        nbatch), stop), seqlen));
+Ys = collect(partition(batchseq(chunk(text[2:end], nbatch), stop), seqlen));
+cd("..") #src
 
 # Note, the following types match, for the encoding for `Xs`, a character, and
 # `Ys`, the subsequent character...
@@ -52,13 +57,13 @@ Ys = collect(partition(batchseq(chunk(text[2:end], nbatch), stop), seqlen))
 idx_map = collect(100:118) # collect makes an Array from a UnitRange
 string_msg = String(['a', 'b']) # Modify me !
 string_msg = String(map(x -> alphabet[x][1], text[idx_map])) #src
-@assert string_msg == "u are all resolved"
+@test string_msg == "u are all resolved "
 
 # # Working with OneHot Vectors
 # Get the first letter of the dataset, from Xs
 xs_letter = "Not a letter" # Fix Me  !!
 xs_letter = alphabet[Xs[1][1][:,1]]
-@assert alphabet[text[1]] == xs_letter
+@test alphabet[text[1]] == xs_letter
 
 
 # # Flux Recurrances
@@ -68,11 +73,11 @@ xs_letter = alphabet[Xs[1][1][:,1]]
 # the sequence of numbers from 1:10 ?
 cell(h, x) = (h + x, x)
 rnn = Flux.Recur(cell, 0)
-rnn(collect(1:100))
+rnn.(collect(1:100))
 
 rnn_state = 0 # Modify me !
 rnn_state = 5050 #src
-@assert rnn.state = rnn_state
+@test rnn.state == rnn_state
 
 
 # # Flux Recurance, many dimensions
@@ -85,9 +90,9 @@ input_data = ones(n, seq_len)
 cell(h, x) = (h .+ x, x)
 rnn = Flux.Recur(cell, zeros(n))
 
-rnn.(input_data) # modify the shape of the input data
+#= rnn.(input_data) modify the shape of the input data in this call! =#
 rnn.([input_data[:,i] for i in 1:10]) #src
-@assert ones(seq_len)*10 == rnn.state
+@test rnn.state ==  repeat([10], length(rnn.state))
 # Note, the desired input type passed to rnn is going to be `Array{Array{Float64,1},1}``
 
 # # RNN - Basic layers
@@ -95,18 +100,18 @@ rnn.([input_data[:,i] for i in 1:10]) #src
 layer = RNN(N, 1)
 layer.(Xs[1])
 
-
-
-
 # # Adding Layers to Models
-# Given a model, `m`, a loss function
+# Multiple Recurrent Layers can compose using our `Chain` data constructor
+# and we will specify input and output dimensions of of the latent dimensions
+# as the first two arguments to LSTM.
+# [LSTM Source code](https://github.com/FluxML/Flux.jl/blob/master/src/layers/recurrent.jl#L101)
 
 m = Chain(
   LSTM(N, 128),
   LSTM(128, 128),
   Dense(128, N),
-  softmax)
-
+  softmax
+)
 
 function loss(xs, ys)
   l = sum(crossentropy.(m.(xs), ys))
@@ -120,8 +125,12 @@ evalcb = () -> @show loss(tx, ty)
 
 params_m = params(m)
 
-Flux.train!(loss = NaN, params = NaN, data = NaN, opts = NaN, cb = throttle(evalcb, 30)) # Fill in the first 4 args
+#= Fill in the first 4 args to Flux.Train =#
+#= Flux.train!(loss = NaN, params = NaN, data = NaN, opts = NaN, cb = throttle(evalcb, 30)) =#
 Flux.train!(loss, params(m), zip(Xs, Ys), opt, cb = throttle(evalcb, 30)) #src
+@test params_m != params(m)
 
-@assert params_m != params(m)
 
+@show "t005 Done" #src
+#= end module =#
+end #src

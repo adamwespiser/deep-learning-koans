@@ -78,4 +78,8 @@ julia> Pkg.resolve()
 julia> Pkg.instantiate()    
 ```
 
+#### Run all tests at once
+```
+$ julia --project="." test/run_koan_source.jl
+```
 

@@ -19,6 +19,8 @@
 # # Setup
 # We will need to load in Flux
 #
+module T001 #src
+using Test
 using Flux
 include("../src/check_cuda.jl")
 print_system_gpu_status()
@@ -30,14 +32,14 @@ print_system_gpu_status()
 # assertion to pass. For instance:
 x = 1
 y = 1 #src
-@assert x == y
+@test x == y
 
 # This can be solved in ONE conventional way:
 # - By defining a new variable `y = 1`
 #
-# Thus, for the sake of these Koans, we suppose the @assert statement does not need to be modified
+# Thus, for the sake of these Koans, we suppose the @test statement does not need to be modified
 # in order to solve the problem!
-# Basically anything goes, as long as `@assert x == ...` is not modified into `@assert true`
+# Basically anything goes, as long as `@test x == ...` is not modified into `@test true`
 
 
 
@@ -50,7 +52,7 @@ aboutkoan = "set the myseed equal to something else, besides 1"
 myseed = 1
 myseed = 42 #src
 Random.seed!(myseed)
-@assert rand(1:10^20) == 5590813852184710016
+@test rand(1:10^20) == 5590813852184710016
 
 # Thus, by looking in "src/t001_introduction.jl", you can find the defition of the function in markup.
 # Missing lines will have a "#src" comment. These usually contain the information needed to complete
@@ -67,7 +69,7 @@ function f(arg) # modify the next line to return the argument...
   return arg #src
 end
 x = 1
-@assert [f(x) for x in 1:10] == 1:10
+@test [f(x) for x in 1:10] == 1:10
 
 # # An Overloaded Function Koan
 # Starting with `f` which accepts a String and returns an `Int64`, make two modifications:
@@ -80,9 +82,9 @@ x_float = convert(Float64, 1)
 x_int = convert(Int64, 1)
 
 f(x::String)::Int64 = 10
-f(x::Int64)::Int64 = 0    #src
-f(x::Float64)::Int64 = 1  #src
-@assert f(x_int) == f(x_float) + 1
+f(x::Int64)::Int64 = 1    #src
+f(x::Float64)::Int64 = 0  #src
+@test f(x_int) == f(x_float) + 1 && x_int == f(x_int)
 
 # Notice that running this cell without modification returns a `MethodError: no method matching ...`
 # and then the type signature of the function at the invocation. When you see a MethodError, it's
@@ -95,7 +97,7 @@ struct Point
   x
   y
 end
-@assert Point(1,1).x == Point(1,1).y
+@test Point(1,1).x == Point(1,1).y
 
 # # A Mutable Struct
 # Taking our point struct from the previous koan, get the following to work
@@ -116,7 +118,7 @@ p2 = Point(1,1)
 p2 = PointMutable(1,1) #src
 setfield!(p2, :x, getfield(p1, :x))
 setfield!(p2, :y, getfield(p1, :y))
-@assert p1.x == p2.x
+@test p1.x == p2.x
 
 
 # Create a stuct, `s`, that will satisfy the following conditions:
@@ -127,7 +129,7 @@ struct S
   x :: Int64    #src
   S() = new(42) #src
 end
-@assert S().x == 42
+@test S().x == 42
 
 # Note, this might seem a little esoteric, but this technique is a very common way to initialize a struct to default values.
 
@@ -137,8 +139,8 @@ end
 # We can create random arrays using the `zeros` or `ones` function
 # Use either one of these to create a 10x10x10 matrix, and get its shape or `size`
 mat = rand(10) # change the call to rand, (add more args)
-@assert size(mat) == (10, 10, 10)
-
+mat = rand(10,10,10) #src
+@test size(mat) == (10, 10, 10)
 
 
 # # Initialize Arrays
@@ -149,15 +151,15 @@ mat_ones = ones() # change this to a call to fill
 mat_ones = fill(1, (10,10,10)) #src
 mat_zeros = zeros() # change this to a fill call
 mat_zeros = fill(0, (10, 10, 10)) #src
-@assert ones(10,10,10) == mat_ones
-@assert zeros(10, 10, 10) == mat_zeros
+@test ones(10,10,10) == mat_ones
+@test zeros(10, 10, 10) == mat_zeros
 
 # # Array Indexing
 # For a 10x10x10 array, get the item at the (4,5,6) position
 mat = reshape(1:1000, 10, 10, 10)
 mat_value = mat[4,5,6] #src
-about_koan = "set mat_value to be a value inside mat"
-@assert 544 == mat_value
+#= set mat_value to be a value inside mat =#
+@test 544 == mat_value
 
 # # Array slicing
 # For our same 10x10x10 sequential matrix, we want to take:
@@ -168,7 +170,7 @@ about_koan = "set mat_value to be a value inside mat"
 # between the set of items with their first dimension equal to 1, and their second dimension equal to 4.
 about_koan = "set a variable mat_value equal to the slice..."
 mat_value = mat[1, :, 4] #src
-@assert mat_value == [301, 311, 321, 331, 341, 351, 361, 371, 381, 391]
+@test mat_value == [301, 311, 321, 331, 341, 351, 361, 371, 381, 391]
 
 # For more information, see `Base.Colon` in the [Julia Docs](https://docs.julialang.org/en/v1/base/arrays/#Base.Colon)
 
@@ -184,11 +186,11 @@ function wrap_checkbound(M, i, j)
   end
 end
 mat = ones(3,3)
-@assert wrap_checkbound(mat, 3, 3) == 1
-@assert wrap_checkbound(mat, 1, 3) == 1
-@assert wrap_checkbound(mat, 1, 0) == 0
-@assert wrap_checkbound(mat, 0, 0) == 0
-@assert wrap_checkbound(mat, 0, 1) == 0
+@test wrap_checkbound(mat, 3, 3) == 1
+@test wrap_checkbound(mat, 1, 3) == 1
+@test wrap_checkbound(mat, 1, 0) == 0
+@test wrap_checkbound(mat, 0, 0) == 0
+@test wrap_checkbound(mat, 0, 1) == 0
 
 # Hopefully this helps you remember that arrays are 1-indexed, but if you forget, you can always
 # write your code to use check_bound and not worry about it!
@@ -201,7 +203,7 @@ mat = ones(3,3)
 old_mat = rand(28,28, 400)
 new_mat = reshape(old_mat, 28, 28, 400) # CHANGE THIS LINE
 new_mat = reshape(old_mat, 28, 28, 1, 400) #src
-@assert size(new_mat) == (28, 28, 1, 400)
+@test size(new_mat) == (28, 28, 1, 400)
 
 
 # # Types
@@ -212,13 +214,7 @@ new_mat = reshape(old_mat, 28, 28, 1, 400) #src
 
 mat_single = zeros(0)
 mat_single = Array{Float64,1}() #src
-mat_double = zeros(0) # Fix this line
-mat_double = Array{Float64,2}() #src
-mat_triple = zeros(1) # Fix this line
-mat_triple = = Array{Float64,3}() #src
-@assert typeof(mat_single) == Array{Float64,1}
-@assert typeof(mat_double) == Array{Float64,2}
-@assert typeof(mat_triple) == Array{Float64,3}
+@test typeof(mat_single) == Array{Float64,1}
 
 # Thus, we can take the results of typeof, `Array{T, N}` and call this as a function to initialize
 # an array, without any values, if need be. Types are a big subject in Julia, but there are a couple
@@ -247,8 +243,8 @@ IntegerParent = Number #src
 Float64Parent = MyCustomType # replace MyCustomType with something else
 Float64Parent = AbstractFloat #src
 
-@assert Integer <: IntegerParent
-@assert Float64 <: Float64Parent
+@test Integer <: IntegerParent
+@test Float64 <: Float64Parent
 
 # Note: These are kind of tricky without looking in the [Julia Docs on Abstract Types](https://docs.julialang.org/en/v1/manual/types/)
 # which will explain the numerical hierarchy.
@@ -262,7 +258,7 @@ bool_vec = [true, false, false]
 target = [1, "banana", "banana"]
 fn(bools) = bools # REWRITE THIS FUNCTION using ifelse
 fn(bools) = map(x -> ifelse(x, 1, "banana"), bools) #src
-@assert fn(bool_vec) == target
+@test fn(bool_vec) == target
 
 # Additionally, we notice the type of "target" is `Array{Any, 1}`, which is a hetergeneous array.
 
@@ -286,23 +282,26 @@ function match_enum(arg::BasicEnum)
   end               #src
 end
 
-@assert match_enum(e1) == -1
-@assert match_enum(e2) == 0
-@assert match_enum(e3) == 1
+@test match_enum(e1) == -1
+@test match_enum(e2) == 0
+@test match_enum(e3) == 1
 
 
 # # Control Flow / for loop
 # Julia has for loops compile to be just as fast as vectorized code,
 # Thus we can write some code to sum all the numbers in a matrix using a for loop.
-about_koan = "a basic for loop would be"
+#= a basic for loop would be =#
 vec = 1:10;
 mutable struct Count
   x :: Int64
-  Count() = new(0)
 end
 c = Count(0) # add a for loop below to iterate over vec and add each element to c
 for i = eachindex(vec) #src
   @show vec[i]         #src
   c.x += vec[i]        #src
 end                    #src
-@assert c.x == Count(55).x
+@test c.x == Count(55).x
+
+@show "t001 Done" #src
+#= end module =#
+end #src

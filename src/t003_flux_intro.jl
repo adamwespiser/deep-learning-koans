@@ -11,9 +11,15 @@
 #  - Different optimizer types, SGD, Flux.ADAM, et cetera
 #  - Flux activation functions: tanh, relu, leaky-relu
 #
-
-
-using Flux
+# # Set up
+# As always, we load in Flux, and in addition, we need LinearAlgebra
+# for access to the the `LinearAlgebra.Transpose` namespace/type.
+module T004 #src
+using Flux, Flux.Tracker
+using Flux.Tracker: grad, update!
+using Random
+using Test
+using LinearAlgebra
 
 # # Set up the data
 # for the X and y, we want to take X and subsequently predict y
@@ -21,11 +27,10 @@ using Flux
 X_0 = randn(100,2)
 X_1 = randn(100,2) .+ 1
 X = transpose(cat(X_1, X_0, dims = 1))
-y = cat(ones(100), zeros(100), dims = 1)
+y = cat(ones(100), zeros(100), dims = 1);
 
 # This will be the data that we use, it's just a simple X/y
 # dataset of N = 200, two dimensions, and one output dimension, y
-
 
 # # Basic Model
 # We will set up a basic neural network, where we will take the two
@@ -43,18 +48,18 @@ m = Chain(
 n = 42
 Xp = randn(2,n)
 y_predicted = m(Xp)
-about_koan = "set y_predicted_size w/ n"
-y_predicted_size = (0,0)
-y_predicted_size = (2, n) #src
-@assert size(y_predicted) == y_predicted_size # some function of n !
+#= set y_predicted_size w/ n =#
+y_predicted_size = (0,0) # Fix me!
+y_predicted_size = (42,1) #src
+@test size(y_predicted) == y_predicted_size # some function of n !
 
 
-# # Flux optimizer
-#
+# # Flux optimizer (an example)
+# Here is an example of using Flux.train! with a loss, model parameters, and Optimization
+# or loss function!
 loss(X, y) = Flux.mse(m(X), y)
 ps = Flux.params(m)
 opt = Flux.ADAM()
-
 Flux.train!(loss, ps, [(X,y)], opt)
 
 # Note, it can be tricky to get the arguments to Flux.train correct
@@ -66,7 +71,7 @@ loss(X) = Flux.mse(m(X), y)
 ps = Flux.params(m)
 opt = Flux.ADAM()
 data = [(X,y)]
-about_koan = "set data variable"
+#= set data variable =#
 data =  [(X,)]
 Flux.train!(loss, ps, data, opt)
 
@@ -77,7 +82,7 @@ Flux.train!(loss, ps, data, opt)
 # thus, using the previous formulation of our `data` and `loss` function
 # into Flux.train, we batch by passing in a list of inputs that fit the dimensions
 # of the model
-
+# [Base.Iterator.zip](https://docs.julialang.org/en/v1/base/iterators/#Base.Iterators.zip)
 ps = Flux.params(m)
 opt = Flux.ADAM()
 N = 200
@@ -87,42 +92,37 @@ y = cat(ones(100), zeros(100), dims = 1)
 N_total = size(X, 1)
 batch_size = 20
 batch_idx = collect(Base.Iterators.partition(1:N_total, batch_size))
-X_batches = zip([transpose(X[1:batch_size,:])],[ y[1:batch_size]] )
+X_batches = zip([transpose(X[1:batch_size,:])],[ y[1:batch_size]] ) # Fix this call!
 X_batches = zip([transpose(X[i,:]) for i in batch_idx], [y[i] for i in batch_idx]) #src
 Flux.train!(loss, ps, X_batches, opt)
-
+@test typeof(first(X_batches)) == Tuple{LinearAlgebra.Transpose{Float64,Array{Float64,2}},Array{Float64,1}}
 
 # # Different Optimizers
 # there are a number of different optimizers you can try, for instnace,
 # you can you a simple Descent optimizer [more info here](https://pkg.julialang.org/docs/Flux/QdkVy/0.8.3/training/optimisers/)
-using Flux, Flux.Tracker
-
 W = param(rand(MersenneTwister(42),2, 5))
 b = param(rand(MersenneTwister(42),2))
-
 predict(x) = W*x .+ b
 loss(x, y) = sum((predict(x) .- y).^2)
-
 x, y = rand(MersenneTwister(42),5), rand(MersenneTwister(42),2) # Dummy data
 l = loss(x, y) # ~ 3
-
 θ = Params([W, b])
-grads = Tracker.gradient(() -> loss(x, y), θ)
+grads = Tracker.gradient(() -> loss(x, y), θ);
 
 # # Re-write the following example with Flux.Descent
-using Flux.Tracker: grad, update!
 
 η = 0.1 # Learning Rate
 for p in (W, b)
-  Flux.Tracker.update!(p, -η * grads[p])
+  #= Insert a call to Flux.Tracker here =#
+  Flux.Tracker.update!(p, -η * grads[p]) #src
 end
-@assert W[1,1] == 0.3967483862667399
+@test W[1,1] == 0.3967483862667399
 
 
 # # Re-written example w/ Flux.Descent
 # Using the function Flux.Descent, which takes as an argument the learning rate, η
 η = 0.1 # Learning Rate
-opt = "some function of η"
+#= some function of η =#
 opt = Flux.Descent(0.1) #src
 
 W = param(rand(MersenneTwister(42),2, 5))
@@ -138,8 +138,12 @@ l = loss(x, y) # ~ 3
 grads = Tracker.gradient(() -> loss(x, y), θ)
 
 for p in (W, b)
-  # Flux.Track.update!(...) use opt here...
+  #= Flux.Track.update!(...) use opt here... =#
   Flux.Tracker.update!(opt, p, grads[p]) #src
 end
-@assert W[1,2] == -0.0984933499933695
+@test W[1,2] == -0.0984933499933695
 
+
+@show "t003 Done" #src
+#= end module =#
+end #src

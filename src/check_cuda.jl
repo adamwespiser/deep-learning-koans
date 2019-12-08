@@ -4,10 +4,10 @@ using Suppressor
 function check_cuda()
   try
     include("../src/load_cuda.jl")
-    return 1
+    return true
   catch e
       # no Cuda is installed
-      return 0
+      return false
   end
 end
 

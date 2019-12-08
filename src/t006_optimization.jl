@@ -1,3 +1,4 @@
+
 # # Tutorial 6: Flux Library: Optimization in Flux.jl
 # The purpose of this chapter is to take a deeper look at how optimization in Flux works. Basically, we’ll dig deeper into Flux.train object, and try to understand the relationship between the three critical components data, model, and optimization routine.
 # In this tutorial we will cover the following
@@ -10,13 +11,15 @@
 #
 # # Setup
 # Load Flux
+module T007 #src
 using Flux
 using Random
+using Test
 # ## Set up some basic variables
 # Note: You may need to re-initialize these variables for
 # Flux.train to show a difference in parameters needed
 # to pass some of the tests
-Random.seed(42)
+Random.seed!(42);
 function create_model()
   Chain(
     Dense(784, 32, σ),
@@ -28,9 +31,9 @@ loss(x, y) = Flux.mse(m(x), y)
 ps = Flux.params(m)
 
 opt = ADAM(0.1)
-x = rand(784)
-y = rand(10)
-data = Iterators.repeated((x, y), 50)
+x = rand(784);
+y = rand(10);
+data = Iterators.repeated((x, y), 50);
 
 
 # #### Randomize model
@@ -43,9 +46,9 @@ data = Iterators.repeated((x, y), 50)
 
 m1 = randn(1) # Fix me !
 m1 = params(create_model()) #src
-m2 = copy(m2) # Fix me !
+m2 = m1 # Fix me !
 m2 = params(create_model()) #src
-@assert m1 != m2
+@test m1 != m2
 
 
 # ## More on Flux Train
@@ -56,7 +59,7 @@ m2 = params(create_model()) #src
 m = create_model()
 ps_old = params(m)
 Flux.train!(loss, ps, data, opt)
-@assert ps_old != ps && ps_old == ps_old
+@test ps_old != ps && ps_old == ps_old
 
 # Thus, we can see that the parameters of the model are updated!
 
@@ -64,14 +67,14 @@ Flux.train!(loss, ps, data, opt)
 # Create a lambda function that accepts no input, and simply returns 0.
 lambda_function = identity # Fix me!
 lambda_function = () -> 0.0 #src
-@assert [lambda_function() for i in 1:10] ==  zeros(10)
+@test [lambda_function() for i in 1:10] ==  zeros(10)
 
 # ## Flux.train callbacks
 # In flux, we can make a call back that runs an effect, in our case,
 # we will want to print out a message to IO. Write a function that
 cb = identity # Fix me
 cb = () -> println("Hello World!")
-@assert typeof(cb()) == Nothing
+@test typeof(cb()) == Nothing
 
 # ## Flux.train callbacks
 # Now, we can write a useful callback function that will test our loss
@@ -80,7 +83,7 @@ test_x, test_y = x, y
 evalcb = () -> println("some function to report loss")
 evalcb = () -> @show(loss(test_x, test_y)) #src
 Flux.train!(loss, ps, data, opt, cb = evalcb)
-
+@test true || "Successfully got here"
 
 # ## Callback thresholding/throttling
 # Flux gives us the ability to throttle the number of times we
@@ -91,12 +94,11 @@ Flux.train!(loss, ps, data, opt, cb = evalcb)
 m = create_model()
 test_x, test_y = x, y
 evalcbt = () -> @show(loss(test_x, test_y)) # Wrap this in a call to throttle
-evalcbt = throttle(evalcb, 10) #src
+evalcbt = Flux.throttle(evalcb, 10) #src
 Flux.train!(loss, ps, data, opt, cb = evalcbt)
+@test true || "Successfully got here"
 
 
-
-
-
-
-
+@show "t006 Done" #src
+#= end module =#
+end #src

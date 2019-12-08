@@ -11,9 +11,10 @@
 #
 # # Load Flux
 # We are just going Flux
+module T004 #src
 using Flux
 using MLDatasets
-
+using Test
 
 # # What is a Convolutional Neural Network (See Hinton 2015)
 # A convolutional neural network is a network that uses convolutional transformations
@@ -29,10 +30,10 @@ train_x, train_y = MNIST.traindata()
 
 train_x_size = (0,) # fix me!
 train_x_size = (28,28, 60000) #src
-train_y_size = (0,) # fix me !
+train_y_size = (0,); # fix me !
 train_y_size = (60000,) #src
-@assert size(train_x) == train_x_size
-@assert size(train_y) = train_y_size
+@test size(train_x) == train_x_size
+@test size(train_y) == train_y_size
 
 
 # # Reshaping to WHCN Format
@@ -44,39 +45,38 @@ train_y_size = (60000,) #src
 N = 100
 x_train_whcn = train_x
 X = reshape(float.(train_x[:,:,1:N]), 28, 28, 1, N)  #src
-y = train_y
+y = train_y # Fix me !
 y = float.(train_y[1:N]) #src
-@assert size(X) == (28,28,1,100)
-@assert size(y) == (100,)
+@test size(X) == (28,28,1,100)
+@test size(y) == (100,)
 
 
 # # Finding the output dimensions of a Conv Layers
 # Given the convolution, find the output dimension after applying it to MINST
 layer = Conv((1, 1), 1 => 32, relu, stride = (1, 1))
-
-output_dims = (0,) # set this
+output_dims = (0,) # Modify me!
 output_dims = (28, 28, 32, 100) #src
-@assert size(layer(X)) == output_dims
+@test size(layer(X)) == output_dims
 
 # # Inspecting Conv Weights
 # We can directly access the weights used by conv, using the accessor, `weight`
 # For the follow example, determine what the dimensions of the Conv.weights would be!
-conv_weights = Conv((3,4), 1 => 16)
+conv_weights = Conv((3,4), 1 => 16).weight
 conv_weights_dim = (0,0,0,0) # modify me!
 conv_weights_dim = (3,4,1,16)
-@assert size(conv_weights) == conv_weights_dim
+@test size(conv_weights) == conv_weights_dim
 
 # # Find the Convolution that fits a shape
 # We want to transform our 100 images of MINST such that
 # our W/H is 27, and our number of channels is 42. What is a layer that will acccomplish this?
 layer = Conv((1,1), 1=> 42, identity)
 layer =  Conv((2, 2), 1 => 42, identity, stride = (1, 1)) #src
-@assert size(layer(X)) == (27, 27, 42, size(X,4))
+@test size(layer(X)) == (27, 27, 42, size(X,4))
 
 # note, we introduce the size(X,4) motif here instead of hardcoding the number of
 # of examples. Further, the activation function we are using identity, has the property
-@assert identity.(X) == X
-@assert identity.(y) == y
+@test identity.(X) == X
+@test identity.(y) == y
 
 # # Stride
 # Stride, or how many pixels height/width are skipped per convolutional filter
@@ -85,7 +85,7 @@ layer =  Conv((2, 2), 1 => 42, identity, stride = (1, 1)) #src
 # dimension of the output.
 layer = Conv((1, 1), 1 => 32, relu, stride = (1, 1))
 layer = Conv((1, 1), 1 => 32, relu, stride = (2, 1)) #src
-@assert size(layer(X)) == (14, 28, 32, size(X,4))
+@test size(layer(X)) == (14, 28, 32, size(X,4))
 
 # # Padding
 # Padding, is the number of pixels from the edge that are used for the convolutional
@@ -97,7 +97,7 @@ layer = Conv((1, 1), 1 => 32, relu, stride = (2, 1)) #src
 layer = Conv((1,1), 1 => 32, relu, stride = (1,1), pad = (0,1))
 size_layer_X = (28, 28, 1, 100) # size(X), we need size(layer(X))
 size_layer_X = (28, 30, 32, 100)
-@assert  size(layer(X)) == size_layer_X
+@test  size(layer(X)) == size_layer_X
 
 # # Padding Koan # 2
 # The Conv argument `pad`, can take a tuple with four arguments,
@@ -122,35 +122,49 @@ layer1 = Conv((2,2), 1 => 16, identity)
 layer2 = Conv((0,0), 0=>0, identity) # modify me !
 layer2 = ConvTranspose((2,2), 16 => 1, identity) #src
 m = Chain(layer1, layer2)
-@assert size(m(X)) == size(X)
+@test size(m(X)) == size(X)
 
 
 # # Putting together a Convolutional Network
-#
+# Here is an example net that accepts images from MINST, and outputs a probability
+# distribution over the 10 potential digits.
+# Note the use of both `Conv`, `MaxPool`, and `softmax`, as well as
+# the introduction of an anonymous function to reshape the data!
 # [Example from model-zoo](https://github.com/FluxML/model-zoo/blob/master/vision/mnist/conv.jl)
 m = Chain(
-    # First convolution, operating upon a 28x28 image
+    #= First convolution, operating upon a 28x28 image =#
     Conv((3, 3), 1=>16, pad=(1,1), relu),
     MaxPool((2,2)),
-    # Second convolution, operating upon a 14x14 image
+    #= Second convolution, operating upon a 14x14 image =#
     Conv((3, 3), 16=>32, pad=(1,1), relu),
     MaxPool((2,2)),
-    # Third convolution, operating upon a 7x7 image
+    #= Third convolution, operating upon a 7x7 image =#
     Conv((3, 3), 32=>32, pad=(1,1), relu),
     MaxPool((2,2)),
-    # Reshape 3d tensor into a 2d one, at this point it should be (3, 3, 32, N)
-    # which is where we get the 288 in the `Dense` layer below:
+    #= Reshape 3d tensor into a 2d one, at this point it should be (3, 3, 32, N) =#
+    #= which is where we get the 288 in the `Dense` layer below: =#
     x -> reshape(x, :, size(x, 4)),
     Dense(288, 10),
-    # Finally, softmax to get nice probabilities
+    #= Finally, softmax to get nice probabilities =#
     softmax,
 )
 
-# # A Final Koan
+# # Apply a CNN to MINST
 # Taking our chain from model zoo, above, and applying it a single Image of MINST
 # what would we expect the output to be?
 X_1 = reshape(X[:,:,:,1], (28,28,1,1))
 y_predicted =  m(X_1)
 y_predicted_shape = (0, 0) # modify me !
 y_predicted_shape = (10, 1) #src
-@assert shape(y_predicted) == y_predicted_shape
+@test size(y_predicted) == y_predicted_shape
+
+# # Conv is reversible!
+# We can actually take a convultion transform, and revere it!
+# This is the transformation behind auto-endcoders trained with
+# variational inference.
+# TODO: talk about the model here: https://github.com/adamwespiser/variational-autoencoders
+
+
+@show "t004 Done" #src
+#= end module =#
+end #src
