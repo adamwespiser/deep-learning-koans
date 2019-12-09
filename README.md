@@ -32,6 +32,10 @@ So far, the tentative chapter outline is as follows:
  - Recurrent Neural Networks and Layers in Flux
  - Putting in all together, and more examples!
 
+#### Attribution Note
+Many examples of these koans are borrowed and modified from sources in the Flux source code, or examples in the Flux Documentation. 
+The Flux source code can be found here: [Flux.jl](https://github.com/FluxML/Flux.jl).
+
 
 # How to Run
 Clone the Repository    
