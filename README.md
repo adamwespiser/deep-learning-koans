@@ -43,10 +43,9 @@ Many examples of these koans are borrowed and modified from sources in the Flux 
 The Flux source code can be found here: [Flux.jl](https://github.com/FluxML/Flux.jl).
 
 
-# Run
-To run this project, you will need Julia installed locally, [which is available here](https://julialang.org/downloads/index.html).     
-To you the chapther on GPU programming, you will need NVIDIA drivers installed on your machine.    
-Clone the Repository    
+# How to Run
+To run this project, you will need Julia installed locally, [which is available here](https://julialang.org/downloads/index.html).  Additionally, you will need NVIDIA drivers installed on your machine, for the GPU based examples in Chapter 7.    
+Clone the Repository, or download directly from Github.    
 ```
 git clone  https://github.com/adamwespiser/deep-learning-koans.git
 ```
