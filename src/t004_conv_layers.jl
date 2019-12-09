@@ -44,7 +44,7 @@ train_y_size = (60000,) #src
 # This koan asks you to sample 100 images from MINST and convert then to WHCN format.
 N = 100
 x_train_whcn = train_x
-X = reshape(float.(train_x[:,:,1:N]), 28, 28, 1, N)  #src
+X = reshape(float.(train_x[:,:,1:N]), 28, 28, 1, N)
 y = train_y # Fix me !
 y = float.(train_y[1:N]) #src
 @test size(X) == (28,28,1,100)

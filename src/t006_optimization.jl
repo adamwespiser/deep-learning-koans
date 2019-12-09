@@ -58,7 +58,8 @@ m2 = params(create_model()) #src
 # The basic train function is as follows:
 m = create_model()
 ps_old = params(m)
-Flux.train!(loss, ps, data, opt)
+#= In this line, make a call to Flux.train! =#
+Flux.train!(loss, params, data, opt) #src
 @test ps_old != ps && ps_old == ps_old
 
 # Thus, we can see that the parameters of the model are updated!

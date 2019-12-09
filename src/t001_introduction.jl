@@ -138,7 +138,7 @@ end
 # [Julia Docs: Array Page](https://docs.julialang.org/en/v1/base/arrays/)
 # We can create random arrays using the `zeros` or `ones` function
 # Use either one of these to create a 10x10x10 matrix, and get its shape or `size`
-mat = rand(10) # change the call to rand, (add more args)
+mat = rand(10) # change the call to rand, (_add more args)
 mat = rand(10,10,10) #src
 @test size(mat) == (10, 10, 10)
 
