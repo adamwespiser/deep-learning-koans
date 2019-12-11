@@ -8,7 +8,9 @@
 #  - Convolutional Layers as dimensional manipulation
 #  - [Inverse Convolutional Networks](https://github.com/FluxML/Flux.jl/blob/master/src/layers/conv.jl#L71), possibly with VAE
 #  - Putting it all together with [MINST Classifier](https://github.com/FluxML/model-zoo/blob/master/vision/mnist/conv.jl) and [VAE w/ Conv/Deconv](https://github.com/FluxML/model-zoo/blob/master/vision/mnist/vae.jl)
-#
+
+COLAB
+
 # # Load Flux
 # We are just going Flux
 module T004 #src

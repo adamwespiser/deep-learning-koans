@@ -9,6 +9,8 @@
 #  - [Reading in a file, line by line into a string](https://en.wikibooks.org/wiki/Introducing_Julia/Working_with_text_files)
 #  - Using BSON.jl for serialization: read/write, talk about JuliaIO
 
+COLAB
+
 # ## Library Imports
 # We need test, for access to `@test`and Random.
 module T001 #src

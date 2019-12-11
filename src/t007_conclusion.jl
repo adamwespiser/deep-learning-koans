@@ -6,7 +6,7 @@
 #  - GPU movement, storage, and computation via the gpu function. [Example here](https://github.com/FluxML/Flux.jl/blob/645aa044644e36b34686286fcd12949c31a3ab68/test/cuda/cuda.jl)
 #  - [CuArrays Library](https://github.com/JuliaGPU/CuArrays.jl)
 #
-#
+COLAB
 # # Setup
 # We will be loading in flux!
 module T007 #src

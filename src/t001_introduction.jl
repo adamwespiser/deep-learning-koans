@@ -11,6 +11,8 @@
 #  - Control flow
 #  - Macros
 
+COLAB
+
 # Problem Statement: In our first tutorial, we want to get used to the concent of using IPython Notebeoks
 # with Julia to solve Koans, and gain some exposure to programming concepts in Julia, and well as introduce
 # Flux.jl from a high level

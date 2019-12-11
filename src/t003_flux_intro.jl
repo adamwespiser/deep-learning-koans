@@ -10,7 +10,9 @@
 #  - Optimization batches, step size, batch normalization concepts
 #  - Different optimizer types, SGD, Flux.ADAM, et cetera
 #  - Flux activation functions: tanh, relu, leaky-relu
-#
+
+COLAB
+
 # # Set up
 # As always, we load in Flux, and in addition, we need LinearAlgebra
 # for access to the the `LinearAlgebra.Transpose` namespace/type.

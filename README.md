@@ -1,6 +1,11 @@
 # Deep Learning Koans
 A collection of Deep Learning Koans written for Flux.jl and Julia Programming language.
 
+#### Colab Link
+[Run these koans on Colab](https://colab.research.google.com/github/adamwespiser/deep-learning-koans/blob/master)
+
+
+
 ### What is a Koan?
 A Koan is a short puzzle designed to elucidate understanding upon completion. The plural, "koans" are also a format of interactive programming puzzles designed to be run locally and to teach the user programming, through a series of challenges in order of increasing difficultly. This is exactly what this project is!    
 Thus, a koan critically consists of three components:     

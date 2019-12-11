@@ -5,7 +5,9 @@
 #  - Flux RNN Layer Interface within Flux: [RNN](https://github.com/FluxML/Flux.jl/blob/master/src/layers/recurrent.jl#L70) [LSTM](https://github.com/FluxML/Flux.jl/blob/master/src/layers/recurrent.jl#L109) [GRU](https://github.com/FluxML/Flux.jl/blob/master/src/layers/recurrent.jl#L156)
 #  - Put it all together: [Char-Rnn, from model-zoo](https://github.com/FluxML/model-zoo/blob/master/text/char-rnn/char-rnn.jl)
 #  - Mention: Loss functions, training functions, sampling, character/word encoding
-#
+
+COLAB
+
 # Problem Statement: To Understand Flux's Recurraent NN layers
 # [Backround Reading](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)
 # [Flux Documentation](https://fluxml.ai/Flux.jl/v0.4/models/layers.html#Recurrent-Layers-1)

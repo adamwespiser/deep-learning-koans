@@ -8,7 +8,9 @@
 #  - A deep dive into Flux.train is “learning” models by calling an optimizer
 #
 # The source code for Flux's optimization code is [available here](https://github.com/FluxML/Flux.jl/tree/master/src/optimise)
-#
+
+COLAB
+
 # # Setup
 # Load Flux
 module T007 #src
