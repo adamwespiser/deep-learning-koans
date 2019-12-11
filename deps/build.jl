@@ -28,7 +28,7 @@ end
 # colab notebooks
 
 repo_src = joinpath(@__DIR__, "..", "src")
-notebooks_dir = joinpath(@__DIR__, "..", "notebooks_colab")
+notebooks_dir = joinpath(@__DIR__, "..", "colab/notebooks")
 
 colab_header = read("./deps/colab_header", String)
 function colab_install(content)
